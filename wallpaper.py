@@ -170,7 +170,7 @@ def set_wallpaper(path):
 def main_action(args):
     return set_wallpaper(
         download_file(
-            build_url(args), abspath(dirname(__file__)) + "wallpaper.jpg"
+            build_url(args), abspath(dirname(__file__)) + "/wallpaper.jpg"
         )
     )
 
