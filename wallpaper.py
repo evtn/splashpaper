@@ -228,19 +228,19 @@ if __name__ == "__main__":
 
     modifiers.add_argument(
         "--daily",
-        help="Add to use photo of the day. Overriden by --weekly",
+        help="Use photo of the day. Overriden by --weekly",
         action="store_true"
     )
 
     modifiers.add_argument(
         "--weekly",
-        help="Add to use photo of the week. Overrides --daily",
+        help="Use photo of the week. Overrides --daily",
         action="store_true"
     )
 
     modifiers.add_argument(
         "--featured",
-        help="Add to use photos picked by Unsplash editors",
+        help="Use photos picked by Unsplash editors",
         action="store_true"
     )
     args = parser.parse_args()
