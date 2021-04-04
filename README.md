@@ -44,7 +44,7 @@ Search terms with `-s`/`--search` option:
 
 Collections with `-c`/`--collections` option (that's my dark wallpapers collection, by the way):
 
-`python wallpaper.py --collections 22546183```
+`python wallpaper.py --collections 22546183`
 
 User photos with `-u`/`--users` option:
 
