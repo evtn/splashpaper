@@ -1,6 +1,6 @@
 # splashpaper
 
-Turn Unsplash to a desktop wallpaper.    
+Turn Unsplash into a desktop wallpaper.    
 Works on Windows, most Linux DEs and macOS
 
 # Installation
