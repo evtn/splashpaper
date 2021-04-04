@@ -224,23 +224,23 @@ if __name__ == "__main__":
         help="Any number of search terms, e.g. '-s nature night'",
     )
 
-    modifiers = parser.add_argument_group("Modifiers", "To be used with sources. Optional")
+    modifiers = parser.add_argument_group("Modifiers")
 
     modifiers.add_argument(
         "--daily",
-        help="Add to use photo of the day. Used on all sources, overriden by --weekly",
+        help="Add to use photo of the day. Overriden by --weekly",
         action="store_true"
     )
 
     modifiers.add_argument(
         "--weekly",
-        help="Add to use photo of the week. Used on all sources, overrides --daily",
+        help="Add to use photo of the week. Overrides --daily",
         action="store_true"
     )
 
     modifiers.add_argument(
         "--featured",
-        help="Add to use photos picked by Unsplash editors. Used on all sources",
+        help="Add to use photos picked by Unsplash editors",
         action="store_true"
     )
     args = parser.parse_args()
