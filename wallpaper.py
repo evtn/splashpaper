@@ -179,7 +179,10 @@ def main_loop(args):
     if not args.interval:
         return main_action(vars(args))
     while True:
-        main_action(vars(args))
+        try:
+            main_action(vars(args))
+        except requests.ConnectionError:
+            print("connection error, skipping current iteration...")
         sleep(args.interval)
 
 
