@@ -77,15 +77,19 @@ If this wasn't obvious, you need to add this script to autostart if you want it 
 # Examples
 
 Photos from [my collection](https://unsplash.com/collections/9943257/wallpapers) of wallpapers, changing every minute
+
 `python wallpaper.py --resolution 1920x1080 --collections 9943257 --interval 60`
 
 Photo of the day from [my collection](https://unsplash.com/collections/9943257/wallpapers) of wallpapers
+
 `python wallpaper.py --resolution 1920x1080 --collections 9943257 --daily`
 
 Water photos, changing every 10 minutes
+
 `python wallpaper.py --resolution 1920x1080 --search water ocean sea --interval 600`
 
 Featured photo of the day
+
 `python wallpaper.py --resolution 1920x1080 --featured --daily`
 
 # Using as a module
