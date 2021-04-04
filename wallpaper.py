@@ -8,7 +8,7 @@ from os.path import abspath, dirname
 from os import environ
 from subprocess import call as call_, DEVNULL, check_output
 
-base_url = "https://source.unsplash.com/"
+base_url = "https://source.unsplash.com"
 
 import platform
 os_name = platform.system()
@@ -123,17 +123,18 @@ def build_url(args):
         "search": args.get("search", [])
     }
     if not any(sources.values()):
-        raise ValueError("You must add one or more sources for script to work. Use --help for more details")
-
-    source_key = choice(
-        list(
-            filter(
-                sources.get,
-                sources
+        source_key = ""
+        source = ""
+    else:
+        source_key = choice(
+            list(
+                filter(
+                    sources.get,
+                    sources
+                )
             )
         )
-    )
-    source = choice(sources[source_key])
+        source = choice(sources[source_key])
     
     if source_key == "likes":
         url = UQuery.likes(source)
@@ -153,6 +154,9 @@ def build_url(args):
     if args.get("resolution"):
         url = UQuery.resolution(url, args["resolution"])
     
+    if url == base_url:
+        url = url + "/random"
+
     if source_key == "search":
         url = UQuery.search(url, source)
 
@@ -194,7 +198,7 @@ if __name__ == "__main__":
         help="Screen resolution (WIDTHxHEIGHT). It's recommended to provide this argument to fetch smaller picture.",
     )
 
-    sources = parser.add_argument_group("Sources", "At least one should be specified")
+    sources = parser.add_argument_group("Sources", "If no source is specified, fetches random picture")
 
     sources.add_argument(
         "-l", "--likes",
