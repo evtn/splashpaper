@@ -22,12 +22,13 @@ def call(cmd):
     return call_(cmd, stdout=DEVNULL, stderr=DEVNULL)
 
 
-def check_de(current_de, list_of_de): # gh:markubiak/wallpaper-reddit
+def check_de(current_de, list_of_de):
     """Check if any of the strings in ``list_of_de`` is contained in ``current_de``."""
     return any(de in current_de for de in list_of_de)
 
 
-# this class heavily uses parts from from gh:markubiak/wallpaper-reddit, I just edited some minor stuff, replaced XFCE branch and changed MacOS command
+# I checked gh:markubiak/wallpaper-reddit to get commands for some Linux DE's/WM's (i3, sway)
+# But as those are the common commands used in specific environments, I don't really see any reason to mess with license
 class Setter: 
     def set(path):
         if os_name in "Windows":
