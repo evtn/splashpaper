@@ -63,8 +63,8 @@ class Setter:
         elif check_de(de, ["mate"]):
             call(["gsettings", "set", "org.mate.background", "picture-filename", "'%s'" % path])
 
-        elif check_de(de, ["i3", "bspwm"]):
-            call(["feh", "--bg-fill", path])
+        elif check_de(de, ["i3", "bspwm", "awesome"]):
+            call(["feh", "--bg-center", path])
         
         elif check_de(de, ["sway"]):
             call(["swaymsg", "output * bg %s fill" % path])
