@@ -8,6 +8,25 @@ from os.path import abspath, dirname
 from os import environ
 from subprocess import call as call_, DEVNULL, check_output
 
+
+class About:
+    classifiers = [
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+    ]
+
+    with open("README.md") as file:
+        long_description = file.read()
+
+    title = "splashpaper"
+    description = "Wallpaper manager with unsplash.com integration"
+    version = "1.0.4"
+    author = "evtn"
+    author_email = "g@evtn.ru"
+    license = "MIT"
+    url = "https://github.com/evtn/splashpaper"
+
+
 base_url = "https://source.unsplash.com"
 
 import platform

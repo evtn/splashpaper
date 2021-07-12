@@ -5,14 +5,18 @@ Works on Windows, most Linux DEs and macOS
 
 # Installation
 
-To use this script, you need Python 3.x and `requests` module.    
-If `pip` is installed (It is installed with Python by default on Windows and some Linux distributions), you can use
+To use this script, you need Python 3.6+ and pip installed.    
+Then, just run:
 
-`python -m pip install requests`
+`python -m pip install splashpaper`
 
-to get `requests`
+# Getting help
 
-Then just download the script and jump to the next section
+It's as simple as:
+
+`python -m splashpaper --help`    
+
+That would print help (mostly the same information as below, but shorter)    
 
 # Usage
 
@@ -20,7 +24,7 @@ Then just download the script and jump to the next section
 
 Basic usage is simple:
 
-`python wallpaper.py`
+`python -m splashpaper`
 
 But that would set a random picture! Not really cool...
 
@@ -29,7 +33,7 @@ But that would set a random picture! Not really cool...
 First of all, the script currently doesn't know your screen resolution.    
 Provide it with `-r`/`--resolution` option to fetch smaller picture, e.g:
 
-`python wallpaper.py --resolution 1920x1080`
+`python -m splashpaper --resolution 1920x1080`
 
 ## Sources
 
@@ -40,19 +44,19 @@ You can provide four types of sources (and combine them), each with as many sour
 
 Search terms with `-s`/`--search` option:
 
-`python wallpaper.py --search sea ocean water`
+`python -m splashpaper --search sea ocean water`
 
 Collections with `-c`/`--collections` option (that's my dark wallpapers collection, by the way):
 
-`python wallpaper.py --collections 22546183`
+`python -m splashpaper --collections 22546183`
 
 User photos with `-u`/`--users` option:
 
-`python wallpaper.py --users erondu aditya1702`
+`python -m splashpaper --users erondu aditya1702`
 
 User likes with `-l`/`--likes` option:
 
-`python wallpaper.py --likes qevitta erondu`
+`python -m splashpaper --likes qevitta erondu`
 
 ## Modifiers
 
@@ -68,7 +72,7 @@ These can be used with any combination of sources.
 
 If you want to change wallpaper once in a while, you can set interval in seconds with `-i`/`--interval`:
 
-`python wallpaper.py --interval 600`
+`python -m splashpaper --interval 600`
 
 ## Autostart
 
@@ -78,26 +82,26 @@ If this wasn't obvious, you need to add this script to autostart if you want it 
 
 Photos from [my collection](https://unsplash.com/collections/9943257/wallpapers) of wallpapers, changing every minute
 
-`python wallpaper.py --resolution 1920x1080 --collections 9943257 --interval 60`
+`python -m splashpaper --resolution 1920x1080 --collections 9943257 --interval 60`
 
 Photo of the day from [my collection](https://unsplash.com/collections/9943257/wallpapers) of wallpapers
 
-`python wallpaper.py --resolution 1920x1080 --collections 9943257 --daily`
+`python -m splashpaper --resolution 1920x1080 --collections 9943257 --daily`
 
 Water photos, changing every 10 minutes
 
-`python wallpaper.py --resolution 1920x1080 --search water ocean sea --interval 600`
+`python -m splashpaper --resolution 1920x1080 --search water ocean sea --interval 600`
 
 Featured photo of the day
 
-`python wallpaper.py --resolution 1920x1080 --featured --daily`
+`python -m splashpaper --resolution 1920x1080 --featured --daily`
 
 # Using as a module
 
 You can use script as a module, using dictionary of options as `args`:
 
 ```python
-from wallpaper import main_action
+from splashpaper import main_action
 from time import sleep
 
 args = {
