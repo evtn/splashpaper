@@ -15,12 +15,9 @@ class About:
         "License :: OSI Approved :: MIT License",
     ]
 
-    with open("README.md") as file:
-        long_description = file.read()
-
     title = "splashpaper"
     description = "Wallpaper manager with unsplash.com integration"
-    version = "1.0.4"
+    version = "1.0.5"
     author = "evtn"
     author_email = "g@evtn.ru"
     license = "MIT"
