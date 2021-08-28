@@ -1,7 +1,7 @@
 import argparse
 from time import sleep
 from random import choice
-from urllib.parse import urlencode
+from urllib.parse import quote
 import requests
 import shutil
 from os.path import abspath, dirname
@@ -17,7 +17,7 @@ class About:
 
     title = "splashpaper"
     description = "Wallpaper manager with unsplash.com integration"
-    version = "1.0.7"
+    version = "1.0.8"
     author = "evtn"
     author_email = "g@evtn.ru"
     license = "MIT"
@@ -121,7 +121,7 @@ class UQuery:
     # search term
 
     def search(url, terms):
-        return url + "?" + urlencode(",".join(terms))
+        return url + "?" + quote(",".join(terms))
 
 
 def download_file(url, path, args=None):
