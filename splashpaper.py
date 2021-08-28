@@ -17,7 +17,7 @@ class About:
 
     title = "splashpaper"
     description = "Wallpaper manager with unsplash.com integration"
-    version = "1.0.5"
+    version = "1.0.6"
     author = "evtn"
     author_email = "g@evtn.ru"
     license = "MIT"
@@ -93,7 +93,7 @@ class Setter:
 
 class UQuery:
     
-    #sources
+    # sources
 
     def user(username):
         return base_url + "/user/%s" % username
@@ -124,9 +124,9 @@ class UQuery:
         return url + "?" + urlencode(",".join(terms))
 
 
-
-def download_file(url, path):
-    with requests.get(url, stream=True) as req:
+def download_file(url, path, args=None):
+    interval = f" interval:{args.interval}" if args else ""
+    with requests.get(url, stream=True, headers={"User-Agent": f"evtn:splashpaper/{About.version}{interval}"}) as req:
         with open(path, 'wb') as file:
             shutil.copyfileobj(req.raw, file)
     return path
@@ -187,7 +187,7 @@ def set_wallpaper(path):
 def main_action(args):
     return set_wallpaper(
         download_file(
-            build_url(args), abspath(dirname(__file__)) + "/wallpaper.jpg"
+            build_url(args), abspath(dirname(__file__)) + "/wallpaper.jpg", args
         )
     )
 
