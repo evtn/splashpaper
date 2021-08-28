@@ -17,7 +17,7 @@ class About:
 
     title = "splashpaper"
     description = "Wallpaper manager with unsplash.com integration"
-    version = "1.0.6"
+    version = "1.0.7"
     author = "evtn"
     author_email = "g@evtn.ru"
     license = "MIT"
@@ -125,7 +125,7 @@ class UQuery:
 
 
 def download_file(url, path, args=None):
-    interval = f" interval:{args.interval}" if args else ""
+    interval = f" interval:{args.get('interval')}" if (args or {}).get('interval') else ""
     with requests.get(url, stream=True, headers={"User-Agent": f"evtn:splashpaper/{About.version}{interval}"}) as req:
         with open(path, 'wb') as file:
             shutil.copyfileobj(req.raw, file)
