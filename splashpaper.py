@@ -120,8 +120,8 @@ class UQuery:
 
     # search term
 
-    def search(url, terms):
-        return url + "?" + quote(",".join(terms))
+    def search(url, term):
+        return url + "?" + quote(term)
 
 
 def download_file(url, path, args=None):
