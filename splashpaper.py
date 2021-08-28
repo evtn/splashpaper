@@ -17,7 +17,7 @@ class About:
 
     title = "splashpaper"
     description = "Wallpaper manager with unsplash.com integration"
-    version = "1.0.8"
+    version = "1.0.9"
     author = "evtn"
     author_email = "g@evtn.ru"
     license = "MIT"
