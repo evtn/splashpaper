@@ -22,7 +22,7 @@ class About:
 
     title = "splashpaper"
     description = "Wallpaper manager with unsplash.com integration"
-    version = "1.0.10"
+    version = "1.0.11"
     author = "evtn"
     author_email = "g@evtn.ru"
     license = "MIT"
