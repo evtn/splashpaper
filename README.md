@@ -3,7 +3,7 @@
 Turn Unsplash into a desktop wallpaper.    
 Works on Windows, most Linux DEs and macOS
 
-##### Warning: on macOS, when changing wallpaper, Dock restarts and screen may freeze for half a second.
+**Warning: on macOS, when changing wallpaper, Dock restarts and screen may freeze for half a second.**
 
 
 # Installation
