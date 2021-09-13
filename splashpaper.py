@@ -22,7 +22,7 @@ class About:
 
     title = "splashpaper"
     description = "Wallpaper manager with unsplash.com integration"
-    version = "1.0.10"
+    version = "1.0.11"
     author = "evtn"
     author_email = "g@evtn.ru"
     license = "MIT"
@@ -94,7 +94,8 @@ class Setter:
             raise ValueError("DE '%s' is not supported. You could try use the script as module or modify the file." % de)
 
     def set_macos(path):
-        call(["osascript", "-e" "'tell application \"Finder\" to set desktop picture to POSIX file \"%s\"'" % path])
+        call(["osascript", "-e", "'tell application \"Finder\" to set desktop picture to POSIX file \"%s\"'" % path])
+        call(["killall", "Dock"])
 
 class UQuery:
     
