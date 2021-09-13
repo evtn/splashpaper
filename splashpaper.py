@@ -2,7 +2,12 @@ import argparse
 from time import sleep
 from random import choice
 from urllib.parse import quote
-import requests
+
+try:
+    import requests # would fail to import if invoked from setup.py
+except:
+    pass
+
 import shutil
 from os.path import abspath, dirname
 from os import environ
@@ -17,7 +22,7 @@ class About:
 
     title = "splashpaper"
     description = "Wallpaper manager with unsplash.com integration"
-    version = "1.0.9"
+    version = "1.0.10"
     author = "evtn"
     author_email = "g@evtn.ru"
     license = "MIT"
