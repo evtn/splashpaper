@@ -94,7 +94,8 @@ class Setter:
             raise ValueError("DE '%s' is not supported. You could try use the script as module or modify the file." % de)
 
     def set_macos(path):
-        call(["osascript", "-e" "'tell application \"Finder\" to set desktop picture to POSIX file \"%s\"'" % path])
+        call(["osascript", "-e", "'tell application \"Finder\" to set desktop picture to POSIX file \"%s\"'" % path])
+        call(["killall", "Dock"])
 
 class UQuery:
     
