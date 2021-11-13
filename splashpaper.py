@@ -1,6 +1,7 @@
 import argparse
 from time import sleep
 from random import choice
+from typing import Generator, List, Union, TypedDict
 from urllib.parse import quote
 
 try:
@@ -8,7 +9,6 @@ try:
 except:
     pass
 
-import shutil
 from os.path import abspath, dirname
 from os import environ
 from subprocess import call as call_, DEVNULL, check_output
@@ -29,6 +29,17 @@ class About:
     url = "https://github.com/evtn/splashpaper"
 
 
+class Args(TypedDict):
+    resolution: str
+    interval: int
+    likes: List[str]
+    collections: List[str]
+    search: List[str]
+    featured: bool
+    weekly: bool
+    daily: bool
+
+
 base_url = "https://source.unsplash.com"
 
 import platform
@@ -39,11 +50,11 @@ if os_name in ["Windows", "nt"]: # apparently Windows Server returns 'nt' instea
     import ctypes
 
 
-def call(cmd):
+def call(cmd: List[str]) -> int:
     return call_(cmd, stdout=DEVNULL, stderr=DEVNULL)
 
 
-def check_de(current_de, list_of_de):
+def check_de(current_de: str, list_of_de: List[str]) -> bool:
     """Check if any of the strings in ``list_of_de`` is contained in ``current_de``."""
     return any(de in current_de for de in list_of_de)
 
@@ -52,7 +63,7 @@ def check_de(current_de, list_of_de):
 # But as those are the common commands used in specific environments, I don't really see any reason to mess with license
 class Setter: 
     @staticmethod
-    def set(path):
+    def set(path: str) -> None:
         if os_name == "Windows":
             return Setter.set_win(path)
         if os_name == "Darwin":
@@ -60,11 +71,11 @@ class Setter:
         return Setter.set_linux(path)
 
     @staticmethod
-    def set_win(path):
-        return ctypes.windll.user32.SystemParametersInfoW(0x14, 0, path, 0x3)
+    def set_win(path: str) -> None:
+        ctypes.windll.user32.SystemParametersInfoW(0x14, 0, path, 0x3)
 
     @staticmethod
-    def set_linux(path): 
+    def set_linux(path: str) -> None: 
         de = (environ.get('DESKTOP_SESSION') or '').lower()
         
         if check_de(de, ["xfce", "xubuntu"]):
@@ -97,7 +108,7 @@ class Setter:
             raise ValueError("DE '%s' is not supported. You could try use the script as module or modify the file." % de)
 
     @staticmethod
-    def set_macos(path):
+    def set_macos(path: str) -> None:
         call(["osascript", "-e", "'tell application \"Finder\" to set desktop picture to POSIX file \"%s\"'" % path])
         call(["killall", "Dock"])
 
@@ -106,51 +117,56 @@ class UQuery:
     # sources
 
     @staticmethod
-    def user(username):
+    def user(username: str) -> str:
         return base_url + "/user/%s" % username
 
     @staticmethod
-    def likes(username):
+    def likes(username: str) -> str:
         return base_url + "/user/%s/likes" % username
 
     @staticmethod
-    def collection(cid):
+    def collection(cid: Union[int, str]) -> str:
         return base_url + "/collection/%s" % cid
 
     # modifiers
 
     @staticmethod
-    def daily(url):
+    def daily(url: str) -> str:
         return url + "/daily"
 
     @staticmethod
-    def weekly(url):
+    def weekly(url: str) -> str:
         return url + "/weekly"
 
     @staticmethod
-    def featured(url):
+    def featured(url: str) -> str:
         return url + "/featured"
 
     @staticmethod
-    def resolution(url, resolution):
+    def resolution(url: str, resolution) -> str:
         return url + "/%s" % resolution
 
     # search term
 
     @staticmethod
-    def search(url, term):
+    def search(url: str, term: str) -> str:
         return url + "?" + quote(term)
 
 
-def download_file(url, path, args=None):
-    interval = f" interval:{args.get('interval')}" if (args or {}).get('interval') else ""
-    with requests.get(url, stream=True, headers={"User-Agent": f"evtn:splashpaper/{About.version}{interval}"}) as req:
-        with open(path, 'wb') as file:
-            shutil.copyfileobj(req.raw, file)
+def download_file_content(url: str, interval: int = 0) -> Generator[bytes, None, None]:
+    interval_text = f" interval:{args.get('interval')}" if interval else ""
+    with requests.get(url, stream=True, headers={"User-Agent": f"evtn:splashpaper/{About.version}{interval_text}"}) as req:
+        yield from req.iter_content()
+
+
+def download_file(url: str, path: str, interval: int = 0) -> str:
+    with open(path, 'wb') as file:
+        for chunk in download_file_content(url, interval):
+            file.write(chunk)
     return path
 
 
-def build_url(args):
+def build_url(args: Args) -> str:
     sources = {
         "likes": args.get("likes", []),
         "users": args.get("users", []),
@@ -198,19 +214,19 @@ def build_url(args):
     return url
 
 
-def set_wallpaper(path):
+def set_wallpaper(path: str) -> None:
     return Setter.set(path)
 
 
-def main_action(args):
+def main_action(args: Args) -> None:
     return set_wallpaper(
         download_file(
-            build_url(args), abspath(dirname(__file__)) + "/wallpaper.jpg", args
+            build_url(args), abspath(dirname(__file__)) + "/wallpaper.jpg", args.get("interval", 0)
         )
     )
 
 
-def main_loop(args):
+def main_loop(args: Args) -> None:
     if not args.get("interval", 0):
         return main_action(args)
     while True:
@@ -285,9 +301,9 @@ modifiers.add_argument(
 
 
 if __name__ == "__main__":
-    args = parser.parse_args()
+    args: Args = Args(**vars(parser.parse_args()))
     if not hasattr(args, "help"):
-        main_loop(vars(args))
+        main_loop(args)
 
 
 
