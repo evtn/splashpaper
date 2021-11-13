@@ -51,18 +51,21 @@ def check_de(current_de, list_of_de):
 # I checked gh:markubiak/wallpaper-reddit to get commands for some Linux DE's/WM's (i3, sway)
 # But as those are the common commands used in specific environments, I don't really see any reason to mess with license
 class Setter: 
+    @staticmethod
     def set(path):
-        if os_name in "Windows":
+        if os_name == "Windows":
             return Setter.set_win(path)
         if os_name == "Darwin":
             return Setter.set_macos(path)
         return Setter.set_linux(path)
 
+    @staticmethod
     def set_win(path):
         return ctypes.windll.user32.SystemParametersInfoW(0x14, 0, path, 0x3)
 
+    @staticmethod
     def set_linux(path): 
-        de = environ.get('DESKTOP_SESSION').lower()
+        de = (environ.get('DESKTOP_SESSION') or '').lower()
         
         if check_de(de, ["xfce", "xubuntu"]):
             # I think that won't create any security problems
@@ -93,6 +96,7 @@ class Setter:
         else:
             raise ValueError("DE '%s' is not supported. You could try use the script as module or modify the file." % de)
 
+    @staticmethod
     def set_macos(path):
         call(["osascript", "-e", "'tell application \"Finder\" to set desktop picture to POSIX file \"%s\"'" % path])
         call(["killall", "Dock"])
@@ -101,31 +105,39 @@ class UQuery:
     
     # sources
 
+    @staticmethod
     def user(username):
         return base_url + "/user/%s" % username
 
+    @staticmethod
     def likes(username):
         return base_url + "/user/%s/likes" % username
 
+    @staticmethod
     def collection(cid):
         return base_url + "/collection/%s" % cid
 
     # modifiers
 
+    @staticmethod
     def daily(url):
         return url + "/daily"
 
+    @staticmethod
     def weekly(url):
         return url + "/weekly"
 
+    @staticmethod
     def featured(url):
         return url + "/featured"
 
+    @staticmethod
     def resolution(url, resolution):
         return url + "/%s" % resolution
 
     # search term
 
+    @staticmethod
     def search(url, term):
         return url + "?" + quote(term)
 
