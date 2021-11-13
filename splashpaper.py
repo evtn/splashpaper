@@ -199,79 +199,83 @@ def main_action(args):
 
 
 def main_loop(args):
-    if not args.interval:
-        return main_action(vars(args))
+    if not args.get("interval", 0):
+        return main_action(args)
     while True:
         try:
-            main_action(vars(args))
+            main_action(args)
         except requests.ConnectionError:
             print("connection error, skipping current iteration...")
-        sleep(args.interval)
+        sleep(args.get("interval", 0))
+
+
+
+
+parser = argparse.ArgumentParser(description="Set a wallpaper or wallpaper slideshow. Specify as many sources as you want.")
+
+parser.add_argument(
+    "-i", "--interval",
+    type=int,
+    help="Slideshow interval (in seconds). If not specified, script will set wallpaper once and exit.",
+    default=0
+)
+# TODO: get_screen_resolution
+parser.add_argument(
+    "-r", "--resolution",
+    help="Screen resolution (WIDTHxHEIGHT). It's recommended to provide this argument to fetch smaller picture.",
+)
+
+sources = parser.add_argument_group("Sources", "If no source is specified, fetches random picture")
+
+sources.add_argument(
+    "-l", "--likes",
+    nargs="*",
+    help="Any number of Unsplash users to choose from their likes, e.g. -l \"qevitta\"",
+)
+
+sources.add_argument(
+    "-u", "--users", 
+    nargs="*",
+    help="Any number of Unsplash users to choose from their photos, e.g. -u \"erondu\" \"aditya1702\"",
+)
+
+sources.add_argument(
+    "-c", "--collections", 
+    nargs="*",
+    help="Any number of Unsplash collection IDs as source of pictures, e.g. '-c 22546183 26962183'",
+)
+
+sources.add_argument(
+    "-s", "--search", 
+    nargs="*",
+    help="Any number of search terms, e.g. '-s nature night'",
+)
+
+modifiers = parser.add_argument_group("Modifiers")
+
+modifiers.add_argument(
+    "--daily",
+    help="Use photo of the day. Overriden by --weekly",
+    action="store_true"
+)
+
+modifiers.add_argument(
+    "--weekly",
+    help="Use photo of the week. Overrides --daily",
+    action="store_true"
+)
+
+modifiers.add_argument(
+    "--featured",
+    help="Use photos picked by Unsplash editors",
+    action="store_true"
+)
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Set a wallpaper or wallpaper slideshow. Specify as many sources as you want.")
-
-    parser.add_argument(
-        "-i", "--interval",
-        type=int,
-        help="Slideshow interval (in seconds). If not specified, script will set wallpaper once and exit.",
-        default=0
-    )
-    # TODO: get_screen_resolution
-    parser.add_argument(
-        "-r", "--resolution",
-        help="Screen resolution (WIDTHxHEIGHT). It's recommended to provide this argument to fetch smaller picture.",
-    )
-
-    sources = parser.add_argument_group("Sources", "If no source is specified, fetches random picture")
-
-    sources.add_argument(
-        "-l", "--likes",
-        nargs="*",
-        help="Any number of Unsplash users to choose from their likes, e.g. -l \"qevitta\"",
-    )
-
-    sources.add_argument(
-        "-u", "--users", 
-        nargs="*",
-        help="Any number of Unsplash users to choose from their photos, e.g. -u \"erondu\" \"aditya1702\"",
-    )
-
-    sources.add_argument(
-        "-c", "--collections", 
-        nargs="*",
-        help="Any number of Unsplash collection IDs as source of pictures, e.g. '-c 22546183 26962183'",
-    )
-
-    sources.add_argument(
-        "-s", "--search", 
-        nargs="*",
-        help="Any number of search terms, e.g. '-s nature night'",
-    )
-
-    modifiers = parser.add_argument_group("Modifiers")
-
-    modifiers.add_argument(
-        "--daily",
-        help="Use photo of the day. Overriden by --weekly",
-        action="store_true"
-    )
-
-    modifiers.add_argument(
-        "--weekly",
-        help="Use photo of the week. Overrides --daily",
-        action="store_true"
-    )
-
-    modifiers.add_argument(
-        "--featured",
-        help="Use photos picked by Unsplash editors",
-        action="store_true"
-    )
     args = parser.parse_args()
     if not hasattr(args, "help"):
-        main_loop(args)
+        main_loop(vars(args))
 
 
 
