@@ -6,8 +6,8 @@ from urllib.parse import quote
 
 try:
     import requests # would fail to import if invoked from setup.py
-except:
-    pass
+except ImportError:
+    requests = None
 
 from os.path import abspath, dirname
 from os import environ
@@ -22,7 +22,7 @@ class About:
 
     title = "splashpaper"
     description = "Wallpaper manager with unsplash.com integration"
-    version = "1.0.11"
+    version = "1.1.0"
     author = "evtn"
     author_email = "g@evtn.ru"
     license = "MIT"
@@ -154,6 +154,8 @@ class UQuery:
 
 
 def download_file_content(url: str, interval: int = 0) -> Generator[bytes, None, None]:
+    if not requests:
+        raise requests_error()
     interval_text = f" interval:{args.get('interval')}" if interval else ""
     with requests.get(url, stream=True, headers={"User-Agent": f"evtn:splashpaper/{About.version}{interval_text}"}) as req:
         yield from req.iter_content()
@@ -227,6 +229,8 @@ def main_action(args: Args) -> None:
 
 
 def main_loop(args: Args) -> None:
+    if not requests:
+        raise requests_error()
     if not args.get("interval", 0):
         return main_action(args)
     while True:
@@ -237,6 +241,8 @@ def main_loop(args: Args) -> None:
         sleep(args.get("interval", 0))
 
 
+def requests_error() -> ImportError:
+    return ImportError("Requests module is not imported, it's either a problem with installation or you've deleted it. Reinstall requests to use the module")
 
 
 parser = argparse.ArgumentParser(description="Set a wallpaper or wallpaper slideshow. Specify as many sources as you want.")
