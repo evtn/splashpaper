@@ -11,7 +11,7 @@ except ImportError:
 
 from os.path import abspath, dirname
 from os import environ
-from subprocess import call as call_, DEVNULL, check_output
+from subprocess import run, DEVNULL, check_output
 
 
 class About:
@@ -61,8 +61,8 @@ if os_name in ["Windows", "nt"]: # apparently Windows Server returns 'nt' instea
     import ctypes
 
 
-def call(cmd: List[str]) -> int:
-    return call_(cmd, stdout=DEVNULL, stderr=DEVNULL)
+def call(cmd: List[str], **kwargs) -> int:
+    return run(cmd, stdout=DEVNULL, stderr=DEVNULL, **kwargs).returncode
 
 
 def check_de(current_de: str, list_of_de: List[str]) -> bool:
