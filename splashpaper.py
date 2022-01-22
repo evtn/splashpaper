@@ -22,7 +22,7 @@ class About:
 
     title = "splashpaper"
     description = "Wallpaper manager with unsplash.com integration"
-    version = "1.3.0"
+    version = "1.3.1"
     author = "evtn"
     author_email = "g@evtn.ru"
     license = "MIT"
@@ -88,40 +88,40 @@ class Setter:
     @staticmethod
     def set_linux(path: str) -> None: 
         de = (environ.get('DESKTOP_SESSION') or '').lower()
-        
-        if check_de(de, ["xfce", "xubuntu"]):
-            # I think that won't create any security problems
-            monitors = check_output(
-                "xfconf-query -c xfce4-desktop -l | grep last-image", 
-                shell=True,
-            ).decode("utf-8").split("\n")
+        if de:
+            if check_de(de, ["xfce", "xubuntu"]):
+                # I think that won't create any security problems
+                monitors = check_output(
+                    "xfconf-query -c xfce4-desktop -l | grep last-image", 
+                    shell=True,
+                ).decode("utf-8").split("\n")
 
-            for monitor in monitors:
-                call(["xfconf-query", "-c", "xfce4-desktop", "-p", monitor, "-s", path])
+                for monitor in monitors:
+                    call(["xfconf-query", "-c", "xfce4-desktop", "-p", monitor, "-s", path])
 
-        elif check_de(de, ["lubuntu"]):
-            call(["pcmanfm", "-w", path])
+            elif check_de(de, ["lubuntu"]):
+                call(["pcmanfm", "-w", path])
 
-        elif check_de(de, ["gnome", "unity", "ubuntu", "cinnamon", "pantheon", "budgie-desktop"]):
-            ns = "cinnamon" if de == "cinnamon" else "gnome"
-            call(["gsettings", "set", "org.%s.desktop.background" % ns, "picture-uri", "file://%s" % path])
-        
-        elif check_de(de, ["mate"]):
-            call(["gsettings", "set", "org.mate.background", "picture-filename", "'%s'" % path])
+            elif check_de(de, ["gnome", "unity", "ubuntu", "cinnamon", "pantheon", "budgie-desktop"]):
+                ns = "cinnamon" if de == "cinnamon" else "gnome"
+                call(["gsettings", "set", "org.%s.desktop.background" % ns, "picture-uri", "file://%s" % path])
+            
+            elif check_de(de, ["mate"]):
+                call(["gsettings", "set", "org.mate.background", "picture-filename", "'%s'" % path])
 
-        elif check_de(de, ["i3", "bspwm", "awesome"]):
-            call(["feh", "--bg-center", path])
-        
-        elif check_de(de, ["sway"]):
-            call(["swaymsg", "output * bg %s fill" % path])
+            elif check_de(de, ["i3", "bspwm", "awesome"]):
+                call(["feh", "--bg-center", path])
+            
+            elif check_de(de, ["sway"]):
+                call(["swaymsg", "output * bg %s fill" % path])
 
         elif not call(["command", "-v", "termux-wallpaper"]): # detecting termux-wallpaper
             call(["termux-wallpaper", "-f", path, "-l"])
+            return 
 
-        else:
-            feh_error = call(["feh", "--bg-center", path])
-            if feh_error:
-                raise ValueError("DE '%s' is not supported. You could try install feh or use the script as module (writing your own set_wallpaper function)" % de) from None
+        feh_error = call(["feh", "--bg-center", path])
+        if feh_error:
+            raise ValueError("DE '%s' is not supported. You could try install feh or use the script as module (writing your own set_wallpaper function)" % de) from None
 
     @staticmethod
     def set_macos(path: str) -> None:
