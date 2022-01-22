@@ -22,7 +22,7 @@ class About:
 
     title = "splashpaper"
     description = "Wallpaper manager with unsplash.com integration"
-    version = "1.3.2"
+    version = "1.3.3"
     author = "evtn"
     author_email = "g@evtn.ru"
     license = "MIT"
@@ -116,12 +116,14 @@ class Setter:
                 call(["swaymsg", "output * bg %s fill" % path])
 
         elif not call("command -v termux-wallpaper", shell=True): # detecting termux-wallpaper
+            call(["termux-wallpaper", "-f", path])
             call(["termux-wallpaper", "-f", path, "-l"])
             return 
-
-        feh_error = call(["feh", "--bg-center", path])
-        if feh_error:
+        try:
+            call(["feh", "--bg-center", path])
+        except FileNotFoundError:
             raise ValueError("DE '%s' is not supported. You could try install feh or use the script as module (writing your own set_wallpaper function)" % de) from None
+            
 
     @staticmethod
     def set_macos(path: str) -> None:

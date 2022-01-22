@@ -178,7 +178,7 @@ Splashpaper runs on:
 
 To use module on Android: 
 
-1. Install Termux and Termux:API apps.    
-2. In Termux, install Python (`pkg install python`) if it's not already installed.
+1. Install Termux.    
+2. In Termux, install Python (`pkg install python`) and Termux:API (`pkg install termux-api`) if it's not already installed.
 3. Install module in Termux just as on desktop: (`python -m pip install splashpaper`)
 4. [Use it!](#usage)
