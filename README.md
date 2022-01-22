@@ -45,19 +45,35 @@ Splashdesktop got your back here!
 
 You can provide four types of sources (and combine them), each with as many sources as you want:
 
-Search terms with `-s`/`--search` option:
+### Search terms
+
+With `-s`/`--search` option:
 
 `python -m splashpaper --search sea ocean water`
 
-Collections with `-c`/`--collections` option (that's my dark wallpapers collection, by the way):
+### Collections 
+
+With `-c`/`--collections` option (that's my dark wallpapers collection, by the way):
 
 `python -m splashpaper --collections 22546183`
 
-User photos with `-u`/`--users` option:
+### Presets
+
+If you don't really know where to look:    
+
+`python -m splashpaper --presets dark`
+
+Available options: `dark, light, all-wallpapers, abstract, nature, night, city`
+
+### User photos
+
+With `-u`/`--users` option:
 
 `python -m splashpaper --users erondu aditya1702`
 
-User likes with `-l`/`--likes` option:
+### User likes
+
+With `-l`/`--likes` option:
 
 `python -m splashpaper --likes qevitta erondu`
 

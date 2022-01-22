@@ -38,9 +38,20 @@ class Args(TypedDict):
     featured: bool
     weekly: bool
     daily: bool
+    presets: List[str]
 
 
 base_url = "https://source.unsplash.com"
+
+presets = {
+    "dark": "22546183", 
+    "light": "26962183", 
+    "wallpapers": "9943257", 
+    "abstract": "85975240", 
+    "nature": "gQEu_f91tVg", 
+    "night": "4PnUeTAlD1s", 
+    "city": "vY-yVNran8c",
+}
 
 import platform
 os_name = platform.system()
@@ -170,11 +181,14 @@ def download_file(url: str, path: str, interval: int = 0) -> str:
 
 def build_url(args: Args) -> str:
     sources = {
-        "likes": args.get("likes", []),
-        "users": args.get("users", []),
-        "collections": args.get("collections", []),
-        "search": args.get("search", [])
+        "likes": args.get("likes") or [],
+        "users": args.get("users") or [],
+        "collections": args.get("collections") or [],
+        "search": args.get("search") or []
     }
+    if args.get("presets"):
+        sources["collections"].extend([presets[key] for key in args.get("presets")])
+
     if not any(sources.values()):
         source_key = ""
         source = ""
@@ -283,6 +297,13 @@ sources.add_argument(
     "-s", "--search", 
     nargs="*",
     help="Any number of search terms, e.g. '-s nature night'",
+)
+
+sources.add_argument(
+    "-p", "--presets",
+    help="Use images from named collections",
+    choices=presets.keys(),
+    nargs="*",
 )
 
 modifiers = parser.add_argument_group("Modifiers")
