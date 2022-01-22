@@ -116,7 +116,9 @@ class Setter:
             call(["swaymsg", "output * bg %s fill" % path])
 
         else:
-            raise ValueError("DE '%s' is not supported. You could try use the script as module or modify the file." % de)
+            feh_error = call(["feh", "--bg-center", path])
+            if feh_error:
+                raise ValueError("DE '%s' is not supported. You could try install feh or use the script as module (writing your own set_wallpaper function)" % de) from None
 
     @staticmethod
     def set_macos(path: str) -> None:
