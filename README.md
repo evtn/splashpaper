@@ -1,10 +1,7 @@
 # splashpaper
 
 Turn Unsplash into a desktop wallpaper.    
-Works on Windows, most Linux DEs and macOS
-
-**Warning: on macOS, when changing wallpaper, Dock restarts and screen may freeze for half a second.**
-
+Works on Windows, most Linux DEs/WMs, macOS and Android (check [compatibility](#compatibility))
 
 # Installation
 
@@ -156,3 +153,32 @@ This snippet shows that:
 - To download a picture from that URL, script uses `download(url, path)`, which returns path
 - To set picture as a wallpaper, script uses `set_wallpaper(path)`
 
+
+# Compatibility
+
+Splashpaper runs on:
+
+- Windows
+- macOS (**Warning: when changing wallpaper, Dock restarts and screen may freeze for half a second.**)
+- Linux
+    - XFCE
+    - LXDE/LXQt
+    - Gnome
+    - Unity
+    - Cinnamon
+    - Mate
+    - i3
+    - bspwm
+    - awesome
+    - sway
+    - ... and also any other de/wm where feh can change wallpaper (used as a fallback)
+- Android
+
+## Usage on Android
+
+To use module on Android: 
+
+1. Install Termux and Termux:API apps.    
+2. In Termux, install Python (`pkg install python`) if it's not already installed.
+3. Install module in Termux just as on desktop: (`python -m pip install splashpaper`)
+4. [Use it!](#usage)

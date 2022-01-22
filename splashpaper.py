@@ -22,7 +22,7 @@ class About:
 
     title = "splashpaper"
     description = "Wallpaper manager with unsplash.com integration"
-    version = "1.1.0"
+    version = "1.3.0"
     author = "evtn"
     author_email = "g@evtn.ru"
     license = "MIT"
@@ -114,6 +114,9 @@ class Setter:
         
         elif check_de(de, ["sway"]):
             call(["swaymsg", "output * bg %s fill" % path])
+
+        elif not call(["command", "-v", "termux-wallpaper"]): # detecting termux-wallpaper
+            call(["termux-wallpaper", "-f", path, "-l"])
 
         else:
             feh_error = call(["feh", "--bg-center", path])
