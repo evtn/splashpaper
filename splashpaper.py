@@ -14,21 +14,6 @@ from os import environ
 from subprocess import run, DEVNULL, check_output
 
 
-class About:
-    classifiers = [
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",
-    ]
-
-    title = "splashpaper"
-    description = "Wallpaper manager with unsplash.com integration"
-    version = "1.3.3"
-    author = "evtn"
-    author_email = "g@evtn.ru"
-    license = "MIT"
-    url = "https://github.com/evtn/splashpaper"
-
-
 class Args(TypedDict):
     resolution: str
     interval: int
@@ -175,7 +160,7 @@ def download_file_content(url: str, interval: int = 0) -> Generator[bytes, None,
     if not requests:
         raise requests_error()
     interval_text = f" interval:{args.get('interval')}" if interval else ""
-    with requests.get(url, stream=True, headers={"User-Agent": f"evtn:splashpaper/{About.version}{interval_text}"}) as req:
+    with requests.get(url, stream=True, headers={"User-Agent": f"evtn:splashpaper/1.x {interval_text}"}) as req:
         yield from req.iter_content()
 
 

@@ -1,7 +1,21 @@
 #!/usr/bin/env python3
 
 from setuptools import setup
-from splashpaper import About
+
+# this is deprecated. use pyproject.toml
+class About:
+    classifiers = [
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+    ]
+
+    title = "splashpaper"
+    description = "Wallpaper manager with unsplash.com integration"
+    version = "1.3.3"
+    author = "evtn"
+    author_email = "g@evtn.ru"
+    license = "MIT"
+    url = "https://github.com/evtn/splashpaper"
 
 with open("README.md") as file:
     long_description = file.read()
