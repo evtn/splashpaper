@@ -20,4 +20,5 @@ setup(
     install_requires=["requests"],
     classifiers=About.classifiers,
     python_requires=">=3.6",
+    scripts=["splashpaper"]
 )

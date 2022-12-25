@@ -35,6 +35,15 @@ Provide it with `-r`/`--resolution` option to fetch smaller picture, e.g:
 
 `python -m splashpaper --resolution 1920x1080`
 
+## DE autoguessing
+
+On Linux, splashpaper would check `DESKTOP_SESSION` environment variable to guess DE/WM you use.    
+If (for some reason) it contains a wrong value, and you get a `DE '...' is not supported. [...]` with wrong or empty name, you can set this variable to a right value.    
+
+Alternatively, you can install `feh` (if it supports your DE) or pass `--de` argument:
+
+`python -m splashpaper --de xfce`
+
 ## Sources
 
 Then you'd probably want some specific images.    
@@ -138,21 +147,16 @@ By default, script calls `main_loop(args)`, which in turn calls `main_action(arg
 `main_action(args)` is defined as:
 
 ```python
-def main_action(args):
+def main_action(args: Args) -> None:
     return set_wallpaper(
         download_file(
             build_url(args), 
-            abspath(dirname(__file__)) + "/wallpaper.jpg"
-        )
+            abspath(dirname(__file__)) + "/wallpaper.jpg", 
+            args.get("interval", 0)
+        ),
+        args.get("de", "")
     )
 ```
-
-This snippet shows that:
-
-- To build a URL based on your args, script uses `build_url(args)`
-- To download a picture from that URL, script uses `download(url, path)`, which returns path
-- To set picture as a wallpaper, script uses `set_wallpaper(path)`
-
 
 # Compatibility
 

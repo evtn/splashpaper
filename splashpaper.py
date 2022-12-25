@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import argparse
 from time import sleep
 from random import choice
@@ -22,7 +24,7 @@ class About:
 
     title = "splashpaper"
     description = "Wallpaper manager with unsplash.com integration"
-    version = "1.3.3"
+    version = "1.3.4"
     author = "evtn"
     author_email = "g@evtn.ru"
     license = "MIT"
@@ -39,6 +41,7 @@ class Args(TypedDict):
     weekly: bool
     daily: bool
     presets: List[str]
+    de: str
 
 
 base_url = "https://source.unsplash.com"
@@ -53,6 +56,21 @@ presets = {
     "city": "vY-yVNran8c",
 }
 
+supported_de_list = {
+    "xfce", 
+    "lxde", 
+    "lxqt", 
+    "gnome", 
+    "unity", 
+    "mate", 
+    "cinnamon", 
+    "pantheon", 
+    "budgie", "i3", 
+    "bspwm", 
+    "awesome", 
+    "sway"
+}
+
 import platform
 os_name = platform.system()
 
@@ -61,7 +79,7 @@ if os_name in ["Windows", "nt"]: # apparently Windows Server returns 'nt' instea
     import ctypes
 
 
-def call(cmd: List[str], **kwargs) -> int:
+def call(cmd: List[str] | str, **kwargs) -> int:
     return run(cmd, stdout=DEVNULL, stderr=DEVNULL, **kwargs).returncode
 
 
@@ -72,22 +90,35 @@ def check_de(current_de: str, list_of_de: List[str]) -> bool:
 
 # I checked gh:markubiak/wallpaper-reddit to get commands for some Linux DE's/WM's (i3, sway)
 # But as those are the common commands used in specific environments, I don't really see any reason to mess with license
-class Setter: 
+class Setter:
+    """
+    class with set_[osname] static methods. 
+
+    `Setter.set(image_path, args.get("de", ""))` is the recommended usage.
+    """
     @staticmethod
-    def set(path: str) -> None:
+    def set(path: str, de: str = "") -> None:
+        """universal setter, chooses a right method based on host OS"""
         if os_name == "Windows":
             return Setter.set_win(path)
         if os_name == "Darwin":
             return Setter.set_macos(path)
-        return Setter.set_linux(path)
+        return Setter.set_linux(path, de)
 
     @staticmethod
     def set_win(path: str) -> None:
-        ctypes.windll.user32.SystemParametersInfoW(0x14, 0, path, 0x3)
+        """sets wallpaper on windows (in one line)"""
+        ctypes.windll.user32.SystemParametersInfoW(0x14, 0, path, 0x3) # type: ignore
 
     @staticmethod
-    def set_linux(path: str) -> None: 
-        de = (environ.get('DESKTOP_SESSION') or '').lower()
+    def set_linux(path: str, de: str = "") -> None: 
+        """
+        sets wallpaper on linux. 
+
+        `de` arg can be omitted (it would try to guess)
+        """
+        de = (de or environ.get('DESKTOP_SESSION') or '').lower()
+        applied = True # it may seem as wrong logic, but it's actually cleaner to assume that wallpaper is applied unless else branches were executed
         if de:
             if check_de(de, ["xfce", "xubuntu"]):
                 # I think that won't create any security problems
@@ -99,10 +130,10 @@ class Setter:
                 for monitor in monitors:
                     call(["xfconf-query", "-c", "xfce4-desktop", "-p", monitor, "-s", path])
 
-            elif check_de(de, ["lubuntu"]):
+            elif check_de(de, ["lubuntu", "lxde", "lxqt"]):
                 call(["pcmanfm", "-w", path])
 
-            elif check_de(de, ["gnome", "unity", "ubuntu", "cinnamon", "pantheon", "budgie-desktop"]):
+            elif check_de(de, ["gnome", "unity", "ubuntu", "cinnamon", "pantheon", "budgie", "budgie-desktop"]):
                 ns = "cinnamon" if de == "cinnamon" else "gnome"
                 call(["gsettings", "set", "org.%s.desktop.background" % ns, "picture-uri", "file://%s" % path])
             
@@ -115,18 +146,27 @@ class Setter:
             elif check_de(de, ["sway"]):
                 call(["swaymsg", "output * bg %s fill" % path])
 
+            else:
+                applied = False
+
         elif not call("command -v termux-wallpaper", shell=True): # detecting termux-wallpaper
             call(["termux-wallpaper", "-f", path])
             call(["termux-wallpaper", "-f", path, "-l"])
-            return 
-        try:
-            call(["feh", "--bg-center", path])
-        except FileNotFoundError:
-            raise ValueError("DE '%s' is not supported. You could try install feh or use the script as module (writing your own set_wallpaper function)" % de) from None
+            return
+
+        else:
+            applied = False
+
+        if not applied:
+            try:
+                call(["feh", "--bg-center", path])
+            except FileNotFoundError:
+                raise ValueError("DE '%s' is not supported. You could try install feh or use the script as module (writing your own set_wallpaper function)" % de) from None
             
 
     @staticmethod
     def set_macos(path: str) -> None:
+        """sets wallpaper on macOS, killing dock because it seems to be the only way. RIP dock (it restarts in a second)"""
         call(["osascript", "-e", "'tell application \"Finder\" to set desktop picture to POSIX file \"%s\"'" % path])
         call(["killall", "Dock"])
 
@@ -174,12 +214,17 @@ class UQuery:
 def download_file_content(url: str, interval: int = 0) -> Generator[bytes, None, None]:
     if not requests:
         raise requests_error()
-    interval_text = f" interval:{args.get('interval')}" if interval else ""
+    interval_text = f" interval:{interval}" if interval else ""
     with requests.get(url, stream=True, headers={"User-Agent": f"evtn:splashpaper/{About.version}{interval_text}"}) as req:
         yield from req.iter_content()
 
 
 def download_file(url: str, path: str, interval: int = 0) -> str:
+    """
+    downloads file at `url` to the path `path`
+
+    `interval` is used in headers (because why not), can be omitted, doesn't affect anything
+    """
     with open(path, 'wb') as file:
         for chunk in download_file_content(url, interval):
             file.write(chunk)
@@ -187,6 +232,7 @@ def download_file(url: str, path: str, interval: int = 0) -> str:
 
 
 def build_url(args: Args) -> str:
+    """builds an unsplash source api url for given args, choosing a source randomly (random could be improved, though)"""
     sources = {
         "likes": args.get("likes") or [],
         "users": args.get("users") or [],
@@ -237,15 +283,16 @@ def build_url(args: Args) -> str:
     return url
 
 
-def set_wallpaper(path: str) -> None:
-    return Setter.set(path)
+def set_wallpaper(path: str, de: str = "") -> None:
+    return Setter.set(path, de)
 
 
 def main_action(args: Args) -> None:
     return set_wallpaper(
         download_file(
             build_url(args), abspath(dirname(__file__)) + "/wallpaper.jpg", args.get("interval", 0)
-        )
+        ),
+        args.get("de", "")
     )
 
 
@@ -278,6 +325,12 @@ parser.add_argument(
 parser.add_argument(
     "-r", "--resolution",
     help="Screen resolution (WIDTHxHEIGHT). It's recommended to provide this argument to fetch smaller picture.",
+)
+
+parser.add_argument(
+    "-d", "--de",
+    help="A Linux DE/WM you use. Should be used only if script fails guessing",
+    choices=supported_de_list,
 )
 
 sources = parser.add_argument_group("Sources", "If no source is specified, fetches random picture")
@@ -333,14 +386,10 @@ modifiers.add_argument(
     action="store_true"
 )
 
-
-if __name__ == "__main__":
+def main_routine():
     args: Args = Args(**vars(parser.parse_args()))
     if not hasattr(args, "help"):
         main_loop(args)
 
-
-
-
-
-
+if __name__ == "__main__":
+    main_routine()
